@@ -1,10 +1,35 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { login } from "../services/backendServices.js";
 
 export const Home = () => {
 
 	const { store, dispatch } = useGlobalReducer()
+	const navigate = useNavigate()
+	const [user, setUser] = useState({
+		email: "",
+		password: "",
+	})
+
+	const handleChange = (e) => {
+		setUser({
+			...user,
+			[e.target.name]: e.target.value
+		})
+	}
+
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		if (!user.email || !user.password) {
+			alert("All fields are required")
+		}
+		login(user, navigate)
+	}
+
+	console.log(user)
+
 
 	const loadMessage = async () => {
 		try {
@@ -34,19 +59,33 @@ export const Home = () => {
 
 	return (
 		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Rigo!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
+			<form onSubmit={handleSubmit}>
+				<div className="mb-3">
+					<label htmlFor="email" className="form-label">Email address</label>
+					<input
+						type="text"
+						name="email" className="form-control" id="email"
+						placeholder="Enter email"
+						value={user.email}
+						onChange={handleChange} />
+				</div>
+				<div className="mb-3">
+					<label htmlFor="password" className="form-label">Password</label>
+					<input
+						type="password"
+						name="password" className="form-control" id="password"
+						placeholder="Enter password"
+						value={user.password}
+						onChange={handleChange} />
+				</div>
+				<button type="submit" className="btn btn-primary">Login</button>
+			</form>
+			<div className="mt-3">
+				<p>
+					¿No tienes cuenta? <a href="/register">Regístrate aquí</a>
+				</p>
 			</div>
+
 		</div>
 	);
 }; 
