@@ -15,7 +15,7 @@ export const Private = () => {
       setUser(response)
       setLoading(false)
     } else {
-      localStorage.removeItem("token")
+      sessionStorage.removeItem("token")
       navigate("/")
     }
   }
@@ -23,14 +23,14 @@ export const Private = () => {
   console.log(user);
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
+    if (!sessionStorage.getItem("token")) {
       setTimeout(() => {
         navigate("/")
       }, 1000)
     } else {
       checkToken()
     }
-  }, [])
+  }, [navigate])
 
   return (
     <>
@@ -49,7 +49,7 @@ export const Private = () => {
                 <button
                   className="btn btn-danger"
                   onClick={() => {
-                    localStorage.removeItem('token')
+                    sessionStorage.removeItem('token')
                     navigate('/')
                   }}
                 >
